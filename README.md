@@ -15,9 +15,11 @@ Pipeline ETL de dados de chuva horária em acumulado diário.
 
 :heavy_check_mark: Busca os dados dos pluviômetros da ANA a partir do contorno das capitais do Brasil.
 
-:heavy_check_mark: Os dados horários são transformados em diários e o usuário escolhe o período de busca (ex: 01/01/2019 à 31/12/2019).
+:heavy_check_mark: O usuário escolhe o período de busca (ex: 01/01/2019 à 31/12/2019).
 
-:heavy_check_mark: Os dados serão salvos no formato CSV na pasta ``dados``.
+:heavy_check_mark: Os dados horários são transformados em diários.
+
+:heavy_check_mark: Os dados serão salvos no formato CSV na pasta ``dados``. Caso o usuário queira trabalhar com os dados em um excel.
 
 ## :warning: Quais tecnologias posso usar?
 

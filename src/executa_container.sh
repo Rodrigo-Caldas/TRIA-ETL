@@ -2,7 +2,7 @@
 
 ### Executa o serviço de coleta de dados no container ###
 
-micromamba run --name ana-api python -m ana
+micromamba run --name tria-etl python -m src
 
 echo "Liberando permissão do diretório /home/dados.."
 

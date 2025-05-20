@@ -11,8 +11,8 @@ from src.logit import console
 
 
 async def handler(
-    data_inicio: str = "01-01-2019",
-    data_fim: str = "31-12-2023",
+    data_inicio: str = "01-01-2025",
+    data_fim: str = "",
     caminho_contorno: Path = Path("capitais_2024", "capitais.shp"),
 ) -> None:
     """
@@ -21,7 +21,7 @@ async def handler(
     Parameters
     ----------
     data_inicio : str, optional
-        Data de início da requisição dos dados, by default '01-01-2024'.
+        Data de início da requisição dos dados, by default '01-01-2025'.
     data_fim : str, optional
         Data final da requisição dos dados, by default "".
     caminho_contorno : Path, optional

@@ -14,4 +14,4 @@ RUN chmod +x /home/src/executa_container.sh
 RUN micromamba env create -f requirements.yaml && micromamba clean --all --yes
 RUN echo "micromamba activate tria-etl" >> ~/.bashrc
 
-CMD ["./ana/executa_container.sh"]
+CMD ["./src/executa_container.sh"]

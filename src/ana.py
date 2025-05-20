@@ -224,8 +224,6 @@ def transformar_csv(df: pd.DataFrame, codigo: str, caminho_csv: Path) -> None:
 
     df2 = df.resample("D", on="data").sum(numeric_only=True)
     df2.reset_index(inplace=True)
-    df2["hora"] = pd.to_datetime(df2["data"])
-    df2["data"] = df2["data"].dt.normalize()
     df2.iloc[0::, 1] = df.iloc[0, 1]
 
     df2.to_csv(f"{caminho_csv}/{codigo}.csv")
@@ -283,7 +281,9 @@ async def obter_chuva(
                     log.info(f"[bright_green]Estação {codigo} ok!")
 
             except ReadError as e:
-                log.warning(f"[yellow] Problema de leitura para {codigo}. Tentando mais uma vez..")
+                log.warning(
+                    f"[yellow] Problema de leitura para {codigo}. Tentando mais uma vez.."
+                )
                 await asyncio.sleep(3)
 
                 resposta = await cliente.get(url_requisicao, timeout=30)

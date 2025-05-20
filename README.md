@@ -12,6 +12,7 @@ Pipeline ETL de dados de chuva horária em acumulado diário.
 3. [Mamba-Conda](#snake-mamba-conda)
 4. [Docker](#whale-docker)
 
+## :sparkles: O que faz?
 
 :heavy_check_mark: Busca os dados dos pluviômetros da ANA a partir do contorno das capitais do Brasil.
 

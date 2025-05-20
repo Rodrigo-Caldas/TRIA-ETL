@@ -1,20 +1,51 @@
-"""Registro TypedDict."""
+"""Registro Basemodel."""
 
 from typing import List
-from typing import TypedDict
+from pydantic import BaseModel
 
-from pandas import Timestamp
+from datetime import datetime
 
 
-class ValoresChuva(TypedDict):
-    """Estrutura da chuva horária."""
+class ValorChuva(BaseModel):
+    """
+    Estrutura da chuva diária.
 
-    data: Timestamp
+    Parameters
+    ----------
+    data : datetime
+        Data da chuva.
+    chuva : float
+        Valor da chuva.
+    """
+    data: datetime
     chuva: float
 
 
-class ColecaoDadosChuva(TypedDict):
-    """Estruturação dos dados de chuva horária da ANA."""
+class ColecaoEstacoesChuva(BaseModel):
+    """
+    Estruturação do código da estação e valores.
 
+    Parameters
+    ----------
     codigo: int
-    valores: List[ValoresChuva]
+        Código da estação.
+    valores: List[ValorChuva]
+        Valores da data e chuva.
+    """
+    codigo: int
+    valores: List[ValorChuva]
+
+
+class Capital(BaseModel):
+    """
+    Estrutura de dados para capitais,
+
+    Parameters
+    ----------
+    capital: str
+        Capital.
+    codigos: List[ColecaoEstacoesChuva]
+        Códigos das estações.
+    """
+    capital: str
+    codigos: List[ColecaoEstacoesChuva]

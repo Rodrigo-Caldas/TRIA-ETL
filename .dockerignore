@@ -1,0 +1,9 @@
+# adicione aqui os arquivos que o Docker deve ignorar durante o processo de building
+*.pyc
+*.pyo
+*.pyd
+*.ipynb
+__pycache__
+.pytest_cache
+.mypy_cache
+.venv

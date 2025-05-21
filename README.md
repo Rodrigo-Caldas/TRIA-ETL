@@ -22,6 +22,8 @@ Pipeline ETL de dados de chuva horária em acumulado diário.
 
 :heavy_check_mark: Os dados serão salvos no formato CSV na pasta ``dados``. Caso o usuário queira trabalhar com os dados em um excel.
 
+:heavy_check_mark: Os dados serão inseridos em um banco de dados MongoDB.
+
 ## :warning: Quais tecnologias posso usar?
 
 Há duas maneiras de executar este repositório, utilizando conda/mamba ou docker.

@@ -11,6 +11,8 @@ Cada vez que requisitarmos um posto será criado um csv com seu código contendo
 
 No final do processo os dados de chuva horária serão salvos em um banco de dados não relacional também (MongoDB).
 
+Se o usuário preferir executar aplicação em docker, os dados ainda serão salvos no mesmo lugar graças ao volume que conecta o container a pasta ``dados`` local.
+
 
 ## :world_map: Conteúdo
 1. [O que faz](#sparkles-o-que-faz)  

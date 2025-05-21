@@ -30,9 +30,6 @@ class DOCDB(BaseSettings):
 
         try:
             client.admin.command("ping")
-            log.info(
-                "[brigth_green]Pinged your deployment. You successfully connected to MongoDB!"
-            )
             return client
 
         except Exception as e:

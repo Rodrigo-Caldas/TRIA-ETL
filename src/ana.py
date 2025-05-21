@@ -7,9 +7,10 @@ from typing import Any, Dict, List
 
 import httpx
 import pandas as pd
-from httpx import ReadError, TimeoutException
 
 from src.config import config
+from src.db import persistir
+from src.esquemas import Capital
 from src.logit import log
 
 
@@ -229,8 +230,48 @@ def transformar_csv(df: pd.DataFrame, codigo: str, caminho_csv: Path) -> None:
     df2.to_csv(f"{caminho_csv}/{codigo}.csv")
 
 
+def transformar_objeto(df: pd.DataFrame, capital: str) -> Capital:
+    """
+    Transforma o DataFrame dos dados meteorológicos em um objeto.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame contendo os dados gerais das estações.
+    capital : str
+        Capital do Brasil.
+
+    Returns
+    -------
+    Capital
+        Objeto contendo contendo Capital, código, data, e chuva da estação para salvar no banco.
+    """
+    df["data"] = pd.to_datetime(df["data"])
+    df = df.astype({"chuva": "float", "codigo": "int"})
+
+    df2 = df.resample("D", on="data").sum(numeric_only=True).reset_index()
+
+    codigo = df["codigo"].iloc[0]
+
+    df2["capital"] = capital
+    df2["codigo"] = codigo
+
+    valores = [
+        {"data": row["data"], "chuva": row["chuva"]} for _, row in df2.iterrows()
+    ]
+
+    resultado = {
+        "capital": capital,
+        "codigos": [{"codigo": codigo, "valores": valores}],
+    }
+
+    objeto_transformado = Capital(**resultado)
+
+    return objeto_transformado
+
+
 async def obter_chuva(
-    codigo: str, caminho_csv, data_inicio: str, data_fim: str = ""
+    codigo: str, caminho_csv: Path, data_inicio: str, data_fim: str = ""
 ) -> None:
     """
     Busca os dados de chuva de uma estação de maneira assíncrona e salva em csv.
@@ -278,32 +319,8 @@ async def obter_chuva(
 
                 else:
                     transformar_csv(df, codigo, caminho_csv)
-                    log.info(f"[bright_green]Estação {codigo} ok!")
-
-            except ReadError as e:
-                log.warning(
-                    f"[yellow] Problema de leitura para {codigo}. Tentando mais uma vez.."
-                )
-                await asyncio.sleep(3)
-
-                resposta = await cliente.get(url_requisicao, timeout=30)
-
-                while resposta.status_code == 429:
-                    await asyncio.sleep(2)
-                    log.warning(f"Nova tentativa da estação {codigo}..")
-                    resposta = await cliente.get(url_requisicao, timeout=None)
-
-                conteudo = resposta.content
-                conteudo_et = ET.fromstring(conteudo)
-                arvore = ET.ElementTree(conteudo_et)
-                raiz = arvore.getroot()
-                df = parsear_serie_xml(raiz)
-
-                if not df.shape[0] > 0 or df["chuva"].isnull().all():
-                    log.info(f"Estação {codigo} sem dados!")
-
-                else:
-                    transformar_csv(df, codigo, caminho_csv)
+                    obj_transformado = transformar_objeto(df, caminho_csv.name)
+                    persistir(obj_transformado)
                     log.info(f"[bright_green]Estação {codigo} ok!")
 
             except Exception as e:

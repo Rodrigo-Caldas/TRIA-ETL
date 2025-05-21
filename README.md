@@ -3,7 +3,13 @@
 ![texto](https://img.shields.io/static/v1?label=linguagem&message=python&color=green&style=flat-square "linguagem")
 ![texto](https://img.shields.io/static/v1?label=ambiente&message=docker&color=blue&style=flat-square "linguagem")
 
-Pipeline ETL de dados de chuva horária em acumulado diário.
+Pipeline ETL de dados de chuva horária em acumulado diário. Com o script acessamos o inventário da ANA, onde obtemos todos os postos que o órgão tem disponível, assim como a latitude e longitude de cada posto. 
+
+Após isso, lemos o arquivo de contorno das capitais do Brasil e apartir do inventário filtramos os postos que estão dentro dos contornos das capitais. Requisitando apenas os postos de nosso interesse.
+
+Cada vez que requisitarmos um posto será criado um csv com seu código contendo a chuva diária. Esse CSV será salvo em uma pasta que terá o nome da capital ao qual ele se encontra.
+
+No final do processo os dados de chuva horária serão salvos em um banco de dados não relacional também (MongoDB).
 
 
 ## :world_map: Conteúdo

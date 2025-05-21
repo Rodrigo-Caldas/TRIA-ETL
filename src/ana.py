@@ -7,9 +7,9 @@ from typing import Any, Dict, List
 
 import httpx
 import pandas as pd
-from httpx import ReadError, TimeoutException
 
 from src.config import config
+from src.db import persistir
 from src.esquemas import Capital
 from src.logit import log
 
@@ -271,7 +271,7 @@ def transformar_objeto(df: pd.DataFrame, capital: str) -> Capital:
 
 
 async def obter_chuva(
-    codigo: str, caminho_csv, data_inicio: str, data_fim: str = ""
+    codigo: str, caminho_csv: Path, data_inicio: str, data_fim: str = ""
 ) -> None:
     """
     Busca os dados de chuva de uma estação de maneira assíncrona e salva em csv.
@@ -319,32 +319,8 @@ async def obter_chuva(
 
                 else:
                     transformar_csv(df, codigo, caminho_csv)
-                    log.info(f"[bright_green]Estação {codigo} ok!")
-
-            except ReadError as e:
-                log.warning(
-                    f"[yellow] Problema de leitura para {codigo}. Tentando mais uma vez.."
-                )
-                await asyncio.sleep(3)
-
-                resposta = await cliente.get(url_requisicao, timeout=30)
-
-                while resposta.status_code == 429:
-                    await asyncio.sleep(2)
-                    log.warning(f"Nova tentativa da estação {codigo}..")
-                    resposta = await cliente.get(url_requisicao, timeout=None)
-
-                conteudo = resposta.content
-                conteudo_et = ET.fromstring(conteudo)
-                arvore = ET.ElementTree(conteudo_et)
-                raiz = arvore.getroot()
-                df = parsear_serie_xml(raiz)
-
-                if not df.shape[0] > 0 or df["chuva"].isnull().all():
-                    log.info(f"Estação {codigo} sem dados!")
-
-                else:
-                    transformar_csv(df, codigo, caminho_csv)
+                    obj_transformado = transformar_objeto(df, caminho_csv.name)
+                    persistir(obj_transformado)
                     log.info(f"[bright_green]Estação {codigo} ok!")
 
             except Exception as e:

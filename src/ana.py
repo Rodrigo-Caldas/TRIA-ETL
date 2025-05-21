@@ -10,6 +10,7 @@ import pandas as pd
 from httpx import ReadError, TimeoutException
 
 from src.config import config
+from src.esquemas import Capital
 from src.logit import log
 
 
@@ -227,6 +228,46 @@ def transformar_csv(df: pd.DataFrame, codigo: str, caminho_csv: Path) -> None:
     df2.iloc[0::, 1] = df.iloc[0, 1]
 
     df2.to_csv(f"{caminho_csv}/{codigo}.csv")
+
+
+def transformar_objeto(df: pd.DataFrame, capital: str) -> Capital:
+    """
+    Transforma o DataFrame dos dados meteorológicos em um objeto.
+
+    Parameters
+    ----------
+    df : pd.DataFrame
+        DataFrame contendo os dados gerais das estações.
+    capital : str
+        Capital do Brasil.
+
+    Returns
+    -------
+    Capital
+        Objeto contendo contendo Capital, código, data, e chuva da estação para salvar no banco.
+    """
+    df["data"] = pd.to_datetime(df["data"])
+    df = df.astype({"chuva": "float", "codigo": "int"})
+
+    df2 = df.resample("D", on="data").sum(numeric_only=True).reset_index()
+
+    codigo = df["codigo"].iloc[0]
+
+    df2["capital"] = capital
+    df2["codigo"] = codigo
+
+    valores = [
+        {"data": row["data"], "chuva": row["chuva"]} for _, row in df2.iterrows()
+    ]
+
+    resultado = {
+        "capital": capital,
+        "codigos": [{"codigo": codigo, "valores": valores}],
+    }
+
+    objeto_transformado = Capital(**resultado)
+
+    return objeto_transformado
 
 
 async def obter_chuva(

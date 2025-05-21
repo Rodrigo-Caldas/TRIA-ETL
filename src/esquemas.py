@@ -1,9 +1,9 @@
 """Registro Basemodel."""
 
-from typing import List
-from pydantic import BaseModel
-
 from datetime import datetime
+from typing import List
+
+from pydantic import BaseModel
 
 
 class ValorChuva(BaseModel):
@@ -17,6 +17,7 @@ class ValorChuva(BaseModel):
     chuva : float
         Valor da chuva.
     """
+
     data: datetime
     chuva: float
 
@@ -32,6 +33,7 @@ class ColecaoEstacoesChuva(BaseModel):
     valores: List[ValorChuva]
         Valores da data e chuva.
     """
+
     codigo: int
     valores: List[ValorChuva]
 
@@ -47,5 +49,6 @@ class Capital(BaseModel):
     codigos: List[ColecaoEstacoesChuva]
         Códigos das estações.
     """
+
     capital: str
     codigos: List[ColecaoEstacoesChuva]
